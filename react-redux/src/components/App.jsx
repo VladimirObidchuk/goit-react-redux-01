@@ -1,17 +1,25 @@
-import { Layout } from './Layout/Layout';
-import { AppBar } from './AppBar/AppBar';
-import { TaskForm } from './TaskForm/TaskForm';
-import { TaskList } from './TaskList/TaskList';
-import './App.css';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import fetchTasks from '../redux/operations';
 
-function App() {
+export const App = () => {
+  const dispatch = useDispatch();
+  // Отримуємо частини стану
+  const { items, isLoading, error } = useSelector(state => state.tasks);
+
+  // Викликаємо операцію
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
+  // Рендерим розмітку в залежності від значень у стані
   return (
-    <Layout>
-      <AppBar />
-      <TaskForm />
-      <TaskList />
-    </Layout>
+    <div>
+      {isLoading && <p>Loading tasks...</p>}
+      {error && <p>{error}</p>}
+      <p>{items.length > 0 && JSON.stringify(items, null, 2)}</p>
+    </div>
   );
-}
+};
 
 export default App;

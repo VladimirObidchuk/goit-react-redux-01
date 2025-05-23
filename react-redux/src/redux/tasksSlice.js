@@ -1,54 +1,66 @@
-import { createAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import fetchTasks from './operations';
 
-export const addTask = createAction('tasks/addTask');
+const taskSlice = createSlice({
+  name: 'task',
+  initialState: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchTasks.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = action.payload;
+      })
+      .addCase(fetchTasks.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+  },
+});
+export const { fetchInProgress, fetchSuccess, fetchError } = taskSlice.actions;
 
-export const deleteTask = createAction('tasks/deleteTask');
+export default taskSlice.reducer;
 
-export const toggleCompleted = createAction('tasks/toggleCompleted');
+// export default function tasksReducer(state = initialState, action) {
+//   switch (action.type) {
+//     case 'tasks/addTask': {
+//       return {
+//         ...state,
+//         items: [...state.items, action.payload],
+//       };
+//     }
 
-const initialState = {
-  items: [
-    { id: 0, text: 'Learn HTML and CSS', completed: true },
-    { id: 1, text: 'Get good at JavaScript', completed: true },
-    { id: 2, text: 'Master React', completed: false },
-    { id: 3, text: 'Discover Redux', completed: false },
-    { id: 4, text: 'Build amazing apps', completed: false },
-  ],
-};
+//     case 'tasks/deleteTask':
+//       return {
+//         ...state,
+//         items: state.items.filter(task => task.id !== action.payload),
+//       };
 
-export default function tasksReducer(state = initialState, action) {
-  switch (action.type) {
-    case 'tasks/addTask': {
-      return {
-        ...state,
-        items: [...state.items, action.payload],
-      };
-    }
+//     case 'tasks/toggleCompleted':
+//       return {
+//         ...state,
+//         items: state.items.map(task => {
+//           if (task.id !== action.payload) {
+//             return task;
+//           }
+//           return {
+//             ...task,
+//             completed: !task.completed,
+//           };
+//         }),
+//       };
 
-    case 'tasks/deleteTask':
-      return {
-        ...state,
-        items: state.items.filter(task => task.id !== action.payload),
-      };
-
-    case 'tasks/toggleCompleted':
-      return {
-        ...state,
-        items: state.items.map(task => {
-          if (task.id !== action.payload) {
-            return task;
-          }
-          return {
-            ...task,
-            completed: !task.completed,
-          };
-        }),
-      };
-
-    default:
-      return state;
-  }
-}
+//     default:
+//       return state;
+//   }
+// }
 
 // export const addTask = newTask => {
 //   return {
@@ -70,3 +82,29 @@ export default function tasksReducer(state = initialState, action) {
 //     payload: taskId,
 //   };
 // };
+
+//   { id: 0, text: 'Learn HTML and CSS', completed: true },
+//   { id: 1, text: 'Get good at JavaScript', completed: true },
+//   { id: 2, text: 'Master React', completed: false },
+//   { id: 3, text: 'Discover Redux', completed: false },
+//   { id: 4, text: 'Build amazing apps', completed: false },
+
+// reducers: {
+//     addTask: (state, action) => {
+//       state.items = action.payload;
+//     },
+//     deleteTask: (state, action) => {
+//       state.items.filter(task => task.id !== action.payload);
+//     },
+//     toggleCompleted: (state, action) => {
+//       state.items.map(task => {
+//         if (task.id !== action.payload) {
+//           return task;
+//         }
+//         return {
+//           ...task,
+//           completed: !task.completed,
+//         };
+//       });
+//     },
+//   },
