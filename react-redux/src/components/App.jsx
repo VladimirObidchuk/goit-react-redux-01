@@ -1,16 +1,27 @@
-import { Layout } from './Layout/Layout';
 import { AppBar } from './AppBar/AppBar';
 import { TaskForm } from './TaskForm/TaskForm';
 import { TaskList } from './TaskList/TaskList';
-import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchTasks } from '../redux/operations';
+import css from './App.module.css';
 
 function App() {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(state => state.isLoading);
+  const error = useSelector(state => state.error);
+
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
   return (
-    <Layout>
+    <div className={css.container}>
       <AppBar />
       <TaskForm />
+      {isLoading && !error && <b>Request in progress...</b>}
       <TaskList />
-    </Layout>
+    </div>
   );
 }
 

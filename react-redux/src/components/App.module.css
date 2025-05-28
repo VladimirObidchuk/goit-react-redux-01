@@ -4,7 +4,13 @@
   padding: 2rem;
   text-align: center;
 }
-
+.container {
+  display: grid;
+  gap: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
